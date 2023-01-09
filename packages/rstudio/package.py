@@ -82,7 +82,7 @@ class Rstudio(CMakePackage):
 
     with when("+tidyverse"):
         r_packages.append("r-tidyverse")
-        r_packages.append("r-colorbrew")
+        r_packages.append("r-colorbrewer")
 
     with when("+bioconductor"):
         r_packages.append("r-ensembldb")
