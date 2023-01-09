@@ -57,6 +57,7 @@ class Rstudio(CMakePackage):
         "boost+pic+atomic+chrono+date_time+filesystem+iostreams+program_options+random+regex+system+thread"
     )
     depends_on("patchelf")
+    depends_on("libxml2", type=("build", "run"))
     depends_on("yaml-cpp")  # find_package fails with newest version
     # rstudio version is 16, but it fails
     depends_on("node-js")
