@@ -24,7 +24,9 @@ from spack.package import *
 
 
 class RLanguageserver(RPackage):
-    """An implementation of the Language Server Protocol for R. The Language Server protocol is used by an editor client to integrate features like auto completion. See <https://microsoft.github.io/language-server-protocol/> for details."""
+    """An implementation of the Language Server Protocol for R. The Language Server protocol is used by an editor
+    client to integrate features like auto completion. See <https://microsoft.github.io/language-server-protocol/>
+    for details. """
 
     homepage = "https://cran.r-project.org/web/packages/languageserver/index.html"
     cran = "languageserver"
