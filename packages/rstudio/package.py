@@ -28,8 +28,9 @@ class Rstudio(CMakePackage):
     )
     conflicts("~desktop", when="~server", msg="One of +server or +desktop must be set.")
 
-    variant("bioconductor", default=False, description="Install bioconductor.")
+    variant("bioconductor", default=True, description="Install bioconductor.")
     variant("tidyverse", default=True, description="Install tidyverse.")
+    variant("arrow", default=True, description="Install arrow")
 
     depends_on("zlib@1.2.5:")
 
@@ -73,6 +74,9 @@ class Rstudio(CMakePackage):
     depends_on("r-rmarkdown")
     depends_on("r-rsconnect")
     depends_on("r-languageserver")
+
+    with when("+arrow"):
+        depends_on("arrow")
 
     with when("+tidyverse"):
         depends_on("r-tidyverse")
