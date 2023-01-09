@@ -75,6 +75,8 @@ class Rstudio(CMakePackage):
     depends_on("r-rsconnect")
     depends_on("r-languageserver")
     depends_on("r-devtools")
+    depends_on("r-irkernel")
+    depends_on("py-ipykernel")
 
     with when("+arrow"):
         depends_on("arrow")
