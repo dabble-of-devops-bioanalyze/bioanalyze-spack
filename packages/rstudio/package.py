@@ -197,4 +197,4 @@ class Rstudio(CMakePackage):
                 package_lib = os.path.join(r_lib, package_lib)
                 os.symlink(base_r_lib_dir, package_lib)
 
-        pass
+        return
