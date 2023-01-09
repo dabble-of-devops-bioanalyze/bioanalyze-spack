@@ -21,11 +21,12 @@
 # ----------------------------------------------------------------------------
 
 from spack.package import *
+import os
 
 
 class Pyautofep(Package):
-    git = "https://github.com/luancarvalhomartins/PyAutoFEP.git"
-    url = "https://github.com/luancarvalhomartins/PyAutoFEP/archive/9de6a9f93214ece37e5d8808a716234b4c0960d1.zip"
+    homepage = "https://github.com/luancarvalhomartins/PyAutoFEP.git"
+    # url = "https://github.com/luancarvalhomartins/PyAutoFEP/archive/9de6a9f93214ece37e5d8808a716234b4c0960d1.zip"
 
     version(
         "2022.10.20",
@@ -39,25 +40,26 @@ class Pyautofep(Package):
         type=("run"),
     )
     depends_on(
-        "mambaforge@4.14.0-2",
-        type=("build", "run"),
+        "mambaforge@22.9.0-2",
+        type=("build"),
     )
 
     def install(self, spec, prefix):
         mkdirp(prefix)
         pkgname = "pyautofep-{0}".format(self.version)
+        env = os.path.join(
+            os.path.dirname(__file__),
+            "{0}.yml".format(pkgname)
+        )
         sh = which("sh")
         sh(
             "mamba",
+            "env",
             "create",
-            "-c",
-            "conda-forge",
-            "-n",
-            "pyautofep",
             "-p",
             prefix,
-            "python=3.8",
-            "pip",
+            "-f",
+            env
         )
         sh("chmod 777 *py")
         sh("cp", "-rf", "./*", "{0}/bin".format(prefix))

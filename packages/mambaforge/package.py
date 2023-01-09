@@ -20,40 +20,41 @@
 # See the Spack documentation for more information on packaging.
 # ----------------------------------------------------------------------------
 
-from spack.package import *
+import platform
 from os.path import split
+import pprint
 
 from spack.package import *
 from spack.util.environment import EnvironmentModifications
+
+_versions = {
+    "22.9.0-2": {
+        "Linux-x86_64": (
+            "d2bb6c33f2373131fc71283baae9eb81a279708d007e55d627d85abe30c2d0eb",
+            "https://github.com/conda-forge/miniforge/releases/download/22.9.0-2/Mambaforge-22.9.0-2-Linux-x86_64.sh"
+        ),
+    },
+}
 
 
 class Mambaforge(Package):
     """Conda but mamba."""
 
     homepage = "https://github.com/conda-forge"
-    url = "https://github.com/conda-forge/miniforge/releases/download/4.14.0-2/Mambaforge-4.14.0-2-Linux-x86_64.sh"
+    # url = "https://github.com/conda-forge/miniforge/releases/download/4.14.0-2/Mambaforge-4.14.0-2-Linux-x86_64.sh"
 
-    # version(
-    #     "22.9.0-2",
-    #     expand=False,
-    #     sha256="d2bb6c33f2373131fc71283baae9eb81a279708d007e55d627d85abe30c2d0eb",
-    # )
-    version(
-        "4.14.0-2",
-        expand=False,
-        sha256="ac3cabd483712a216f1dddeb92a7f8e198a771390c6627aa94791ab6abc7fae8",
-        url="https://github.com/conda-forge/miniforge/releases/download/4.14.0-2/Mambaforge-4.14.0-2-Linux-x86_64.sh"
-    )
-
-    # FIXME: Add dependencies if required.
-    # depends_on("foo")
+    for ver, packages in _versions.items():
+        key = "{0}-{1}".format(platform.system(), platform.machine())
+        pkg = packages.get(key)
+        if pkg:
+            version(str(ver), pkg[0], url=pkg[1], expand=False)
 
     def install(self, spec, prefix):
         # peel the name of the script out of the pathname of the
         # downloaded file
         dir, script = split(self.stage.archive_file)
         bash = which("bash")
-        bash(script, "-b", "-f", "-p", self.prefix)
+        bash(script, "-b", "-f", "-p", prefix)
 
     def setup_run_environment(self, env):
         filename = self.prefix.etc.join("profile.d").join("conda.sh")

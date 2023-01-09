@@ -1,0 +1,39 @@
+name: pyautofep
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python=3.9
+  - typer
+  - pydantic
+  - rich-click
+  - cython
+  - ipython
+  - ipykernel
+  - pandas
+  - seaborn
+  - bash_kernel
+  - prefect>=2
+  - matplotlib
+  - numpy
+  - scipy
+  - ambertools
+  - parallel
+  - pymbar==3.0.5
+  - alchemlyb=0.6.0
+  - rdkit=2019.09
+  - networkx>=2
+  - openbabel>=3
+  - biopython
+  - mdanalysis
+  - pip
+  - pip:
+      - batchspawner
+      - aws-pcluster-helpers
+      - aws-pcluster-slurm-spawner
+      - aws-pcluster-dask-gateway
+      - prefect>=2
+      - prefect-aws
+      - prefect-shell
+      - prefect-dask
