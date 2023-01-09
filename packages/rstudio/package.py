@@ -48,7 +48,7 @@ class Rstudio(CMakePackage):
 
     # TODO pretty sure rstudio constrains r version
     depends_on("r+X", type=("build", "run"))
-    depends_on("cmake@3.25.1:", type="build")
+    depends_on("cmake@3.25.1:", type=("build", "run"))
     depends_on("pkgconfig", type="build")
     depends_on("ant", type="build")
     # Could NOT find Boost (missing: atomic chrono date_time filesystem iostreams
@@ -63,48 +63,50 @@ class Rstudio(CMakePackage):
     depends_on("yarn")
     depends_on("pandoc")
     depends_on("icu4c")
-    #         k3q7jx3v/include/soci/soci-platform.h:154:10: error: #error "SOCI must be configured with C++11 s
-    #         upport when using C++11"
-    #  911             #error "SOCI must be configured with C++11 support when using C++11"
-    #  912              ^~~~~
-
     depends_on("soci~static+boost+postgresql+sqlite cxxstd=11")
     depends_on("java")
-    depends_on("r-markdown")
-    depends_on("r-rmarkdown")
-    depends_on("r-rsconnect")
-    depends_on("r-languageserver")
-    depends_on("r-devtools")
-    depends_on("r-irkernel")
+
+    r_packages = [
+        "r-markdown",
+        "r-rmarkdown",
+        "r-rsconnect",
+        "r-languageserver",
+        "r-devtools",
+        "r-irkernel",
+    ]
+
     depends_on("py-ipykernel")
 
     with when("+arrow"):
         depends_on("arrow")
 
     with when("+tidyverse"):
-        depends_on("r-tidyverse")
-        depends_on("r-colorbrewer")
+        r_packages.append("r-tidyverse")
+        r_packages.append("r-colorbrew")
 
     with when("+bioconductor"):
-        depends_on("r-ensembldb")
-        depends_on("r-biocmanager")
-        depends_on("r-biocgenerics")
+        r_packages.append("r-ensembldb")
+        r_packages.append("r-biocmanager")
+        r_packages.append("r-biocgenerics")
 
     with when("+notebook"):
-        depends_on("r-base64enc")
-        depends_on("r-digest")
-        depends_on("r-evaluate")
-        depends_on("r-glue")
-        depends_on("r-highr")
-        depends_on("r-htmltools")
-        depends_on("r-jsonlite")
-        depends_on("r-knitr")
-        depends_on("r-magrittr")
-        depends_on("r-stringi")
-        depends_on("r-stringr")
-        depends_on("r-tinytex")
-        depends_on("r-xfun")
-        depends_on("r-yaml")
+        r_packages.append("r-base64enc")
+        r_packages.append("r-digest")
+        r_packages.append("r-evaluate")
+        r_packages.append("r-glue")
+        r_packages.append("r-highr")
+        r_packages.append("r-htmltools")
+        r_packages.append("r-jsonlite")
+        r_packages.append("r-knitr")
+        r_packages.append("r-magrittr")
+        r_packages.append("r-stringi")
+        r_packages.append("r-stringr")
+        r_packages.append("r-tinytex")
+        r_packages.append("r-xfun")
+        r_packages.append("r-yaml")
+
+    for package in r_packages:
+        depends_on(package)
 
     def patch(self):
         # remove hardcoded soci path to use spack soci
@@ -181,3 +183,18 @@ class Rstudio(CMakePackage):
 
     def setup_build_environment(self, env):
         env.set("RSTUDIO_TOOLS_ROOT", self.prefix.tools)
+
+    @run_before("install")
+    def symlink_all_the_things(self):
+        """RStudio Server OSS will only allow for the system libPaths and the User libPaths"""
+
+        base_r_lib_dir = os.path.join(self.spec["r"].prefix, "rlib", "R", "library")
+        for package in r_packages:
+            prefix = self.spec[package].prefix
+            r_lib = os.path.join(prefix, "rlib", "R", "library")
+            package_libs = os.listdir(r_lib)
+            for package_lib in package_libs:
+                package_lib = os.path.join(r_lib, package_lib)
+                os.symlink(base_r_lib_dir, package_lib)
+
+        pass
