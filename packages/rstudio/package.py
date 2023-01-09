@@ -16,14 +16,16 @@ class Rstudio(CMakePackage):
 
     version(
         "2022.12.0",
-        sha256="e4f3503e2ad4229301360f56fd5288e5c8e769c490073dae7fe40366237ecce0"
+        sha256="e4f3503e2ad4229301360f56fd5288e5c8e769c490073dae7fe40366237ecce0",
     )
 
     variant("notebook", default=True, description="Enable notebook support.")
     variant("server", default=False, description="Install RStudio as a server.")
     variant("desktop", default=False, description="Install RStudio as a Desktop app.")
 
-    conflicts("+desktop", when="+server", msg="+server and +desktop are mutually exclusive.")
+    conflicts(
+        "+desktop", when="+server", msg="+server and +desktop are mutually exclusive."
+    )
     conflicts("~desktop", when="~server", msg="One of +server or +desktop must be set.")
 
     variant("bioconductor", default=False, description="Install bioconductor.")
@@ -50,7 +52,9 @@ class Rstudio(CMakePackage):
     depends_on("ant", type="build")
     # Could NOT find Boost (missing: atomic chrono date_time filesystem iostreams
     # program_options random regex system thread)
-    depends_on("boost+pic+atomic+chrono+date_time+filesystem+iostreams+program_options+random+regex+system+thread")
+    depends_on(
+        "boost+pic+atomic+chrono+date_time+filesystem+iostreams+program_options+random+regex+system+thread"
+    )
     depends_on("patchelf")
     depends_on("yaml-cpp")  # find_package fails with newest version
     # rstudio version is 16, but it fails
@@ -130,7 +134,8 @@ class Rstudio(CMakePackage):
         with working_dir(pandoc_dir):
             os.symlink(self.spec["pandoc"].prefix.bin.pandoc, "pandoc")
             os.symlink(
-                os.path.join(self.spec["pandoc"].prefix.bin, "pandoc-citeproc"), "pandoc-citeproc"
+                os.path.join(self.spec["pandoc"].prefix.bin, "pandoc-citeproc"),
+                "pandoc-citeproc",
             )
 
     @run_before("cmake")
@@ -155,7 +160,7 @@ class Rstudio(CMakePackage):
         args = [
             "-DRSTUDIO_USE_SYSTEM_YAML_CPP=Yes",
             "-DRSTUDIO_USE_SYSTEM_BOOST=Yes",
-            "-DRSTUDIO_USE_SYSTEM_SOCI=Yes"
+            "-DRSTUDIO_USE_SYSTEM_SOCI=Yes",
         ]
 
         if "+server" in self.spec:
@@ -169,4 +174,3 @@ class Rstudio(CMakePackage):
 
     def setup_build_environment(self, env):
         env.set("RSTUDIO_TOOLS_ROOT", self.prefix.tools)
-

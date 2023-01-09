@@ -47,19 +47,8 @@ class Pyautofep(Package):
     def install(self, spec, prefix):
         mkdirp(prefix)
         pkgname = "pyautofep-{0}".format(self.version)
-        env = os.path.join(
-            os.path.dirname(__file__),
-            "{0}.yml".format(pkgname)
-        )
+        env = os.path.join(os.path.dirname(__file__), "{0}.yml".format(pkgname))
         sh = which("sh")
-        sh(
-            "mamba",
-            "env",
-            "create",
-            "-p",
-            prefix,
-            "-f",
-            env
-        )
+        sh("mamba", "env", "create", "-p", prefix, "-f", env)
         sh("chmod 777 *py")
         sh("cp", "-rf", "./*", "{0}/bin".format(prefix))

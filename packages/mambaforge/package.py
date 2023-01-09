@@ -31,7 +31,7 @@ _versions = {
     "22.9.0-2": {
         "Linux-x86_64": (
             "d2bb6c33f2373131fc71283baae9eb81a279708d007e55d627d85abe30c2d0eb",
-            "https://github.com/conda-forge/miniforge/releases/download/22.9.0-2/Mambaforge-22.9.0-2-Linux-x86_64.sh"
+            "https://github.com/conda-forge/miniforge/releases/download/22.9.0-2/Mambaforge-22.9.0-2-Linux-x86_64.sh",
         ),
     },
 }
