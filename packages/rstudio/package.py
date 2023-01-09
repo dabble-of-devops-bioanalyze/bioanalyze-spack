@@ -74,6 +74,7 @@ class Rstudio(CMakePackage):
     depends_on("r-rmarkdown")
     depends_on("r-rsconnect")
     depends_on("r-languageserver")
+    depends_on("r-devtools")
 
     with when("+arrow"):
         depends_on("arrow")
