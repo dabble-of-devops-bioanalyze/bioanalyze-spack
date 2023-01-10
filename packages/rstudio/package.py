@@ -49,7 +49,7 @@ class Rstudio(CMakePackage):
     # TODO pretty sure rstudio constrains r version
     depends_on("r+X", type=("build", "run"))
     depends_on("cmake@3.25.1:", type=("build"))
-    depends_on("pkgconfig", type="build")
+    # depends_on("pkgconfig", type="build")
     depends_on("ant", type="build")
     # Could NOT find Boost (missing: atomic chrono date_time filesystem iostreams
     # program_options random regex system thread)

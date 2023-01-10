@@ -79,7 +79,7 @@ class RLanguageserver(RPackage):
     depends_on("r-callr", type=("build", "run"))
     depends_on("r-fs", type=("build", "run"))
     # depends_on("r-collections", type=("build", "run"))
-    # depends_on("r-oxygen2", type=("build", "run"))
+    # depends_on("r-oxygen2", ty126 pe=("build", "run"))
 
     # FIXME: Add dependencies if required.
     depends_on("r", type=("build", "run"))
