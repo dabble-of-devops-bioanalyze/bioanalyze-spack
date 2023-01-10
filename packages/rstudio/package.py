@@ -71,7 +71,7 @@ class Rstudio(CMakePackage):
         "r-markdown",
         "r-rmarkdown",
         "r-rsconnect",
-        "r-languageserver",
+        # "r-languageserver",
         "r-devtools",
         "r-irkernel",
     ]
