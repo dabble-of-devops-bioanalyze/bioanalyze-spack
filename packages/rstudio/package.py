@@ -48,7 +48,7 @@ class Rstudio(CMakePackage):
 
     # TODO pretty sure rstudio constrains r version
     depends_on("r+X", type=("build", "run"))
-    depends_on("cmake@3.25.1:", type=("build", "run"))
+    depends_on("cmake@3.25.1:", type=("build"))
     depends_on("pkgconfig", type="build")
     depends_on("ant", type="build")
     # Could NOT find Boost (missing: atomic chrono date_time filesystem iostreams
@@ -184,17 +184,17 @@ class Rstudio(CMakePackage):
     def setup_build_environment(self, env):
         env.set("RSTUDIO_TOOLS_ROOT", self.prefix.tools)
 
-    @run_before("install")
-    def symlink_all_the_things(self):
-        """RStudio Server OSS will only allow for the system libPaths and the User libPaths"""
-
-        base_r_lib_dir = os.path.join(self.spec["r"].prefix, "rlib", "R", "library")
-        for package in r_packages:
-            prefix = self.spec[package].prefix
-            r_lib = os.path.join(prefix, "rlib", "R", "library")
-            package_libs = os.listdir(r_lib)
-            for package_lib in package_libs:
-                package_lib = os.path.join(r_lib, package_lib)
-                os.symlink(base_r_lib_dir, package_lib)
-
-        return
+    # @run_before("install")
+    # def symlink_all_the_things(self):
+    #     """RStudio Server OSS will only allow for the system libPaths and the User libPaths"""
+    #
+    #     base_r_lib_dir = os.path.join(self.spec["r"].prefix, "rlib", "R", "library")
+    #     for package in r_packages:
+    #         prefix = self.spec[package].prefix
+    #         r_lib = os.path.join(prefix, "rlib", "R", "library")
+    #         package_libs = os.listdir(r_lib)
+    #         for package_lib in package_libs:
+    #             package_lib = os.path.join(r_lib, package_lib)
+    #             os.symlink(base_r_lib_dir, package_lib)
+    #
+    #     return
