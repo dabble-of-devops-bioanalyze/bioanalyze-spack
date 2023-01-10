@@ -68,6 +68,19 @@ class RLanguageserver(RPackage):
         sha256="ddc7a3f0bf14e63a37a1471f53583e4758182cecd02be13bf1e28baa72d9a069",
     )
 
+    # ERROR: dependencies
+    # 'callr', 'collections', 'fs', 'jsonlite',
+    # 'lintr', 'R6', 'roxygen2', 'stringi', 'styler', 'xml2', 'xmlparsedata'
+    depends_on("r-xml2", type=("build", "run"))
+    depends_on("r-styler", type=("build", "run"))
+    depends_on("r-stringi", type=("build", "run"))
+    depends_on("r-oxygen2", type=("build", "run"))
+    depends_on("r-r6", type=("build", "run"))
+    depends_on("r-jsonlite", type=("build", "run"))
+    depends_on("r-callr", type=("build", "run"))
+    depends_on("r-fs", type=("build", "run"))
+    depends_on("r-collections", type=("build", "run"))
+
     # FIXME: Add dependencies if required.
     depends_on("r", type=("build", "run"))
 
