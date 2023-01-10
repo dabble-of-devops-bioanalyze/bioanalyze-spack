@@ -74,12 +74,12 @@ class RLanguageserver(RPackage):
     depends_on("r-xml2", type=("build", "run"))
     depends_on("r-styler", type=("build", "run"))
     depends_on("r-stringi", type=("build", "run"))
-    # depends_on("r-oxygen2", type=("build", "run"))
     depends_on("r-r6", type=("build", "run"))
     depends_on("r-jsonlite", type=("build", "run"))
     depends_on("r-callr", type=("build", "run"))
     depends_on("r-fs", type=("build", "run"))
-    depends_on("r-collections", type=("build", "run"))
+    # depends_on("r-collections", type=("build", "run"))
+    # depends_on("r-oxygen2", type=("build", "run"))
 
     # FIXME: Add dependencies if required.
     depends_on("r", type=("build", "run"))
