@@ -78,8 +78,8 @@ class Rstudio(CMakePackage):
 
     depends_on("py-ipykernel")
 
-    with when("+arrow"):
-        depends_on("arrow")
+    # with when("+arrow"):
+    #     depends_on("arrow")
 
     with when("+tidyverse"):
         r_packages.append("r-tidyverse")
