@@ -6,7 +6,7 @@
 from spack.package import *
 
 
-class PkgConfig(AutotoolsPackage):
+class Pkgconfig(AutotoolsPackage):
     """pkg-config is a helper tool used when compiling applications
     and libraries"""
 

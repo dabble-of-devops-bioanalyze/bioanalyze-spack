@@ -64,7 +64,7 @@ class Rstudio(CMakePackage):
     depends_on("yarn")
     depends_on("pandoc")
     depends_on("icu4c")
-    depends_on("soci~static+boost+postgresql+sqlite cxxstd=11")
+    depends_on("soci@4.0.0~static+boost+postgresql+sqlite cxxstd=11")
     depends_on("java")
 
     r_packages = [
