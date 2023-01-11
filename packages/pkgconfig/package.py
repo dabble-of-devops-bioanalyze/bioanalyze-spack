@@ -8,7 +8,9 @@ from spack.package import *
 
 class Pkgconfig(AutotoolsPackage):
     """pkg-config is a helper tool used when compiling applications
-    and libraries"""
+    and libraries
+    This should not be necessary. pkg-config provides pkgconfig, but sometimes spack freaks out and says nope its not there.
+    """
 
     homepage = "https://www.freedesktop.org/wiki/Software/pkg-config/"
     # URL must remain http:// so Spack can bootstrap curl
