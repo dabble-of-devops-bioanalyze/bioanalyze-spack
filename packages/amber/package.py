@@ -207,49 +207,49 @@ class Amber(Package, CudaPackage):
         os.chdir('build')
         conf = Executable("./configure_cmake.py")
         base_args = [
-            "--no-python",
+            # "--no-python",
         ]
-        #if self.spec.satisfies("~x11"):
-        #    base_args += ["--noX11"]
+        if self.spec.satisfies("~x11"):
+            base_args += ["--noX11"]
 
         # Update the sources: Apply all upstream patches
-        #if self.spec.satisfies("+update"):
+        # if self.spec.satisfies("+update"):
         #    update = Executable("./update_amber")
         #    update(*(["--update"]))
-        #else:
+        # else:
         #    base_args += ["--no-check-updates --no-apply-updates"]
 
         # Non-x86 architecture
-        #if self.spec.target.family != "x86_64":
+        # if self.spec.target.family != "x86_64":
         #    base_args += ["-nosse"]
 
         # Single core
-        #conf(*(base_args + [compiler]))
+        # conf(*(base_args + [compiler]))
         conf(*(base_args))
-        make("install")
 
         # CUDA
-        #if self.spec.satisfies("+cuda"):
-        #    conf(*(base_args + ["-cuda", compiler]))
-        #    make("install")
+        if self.spec.satisfies("+cuda"):
+            conf(*(base_args + ["--cuda", "--compiler", compiler]))
+            # make("install")
 
         ## MPI
-        #if self.spec.satisfies("+mpi"):
-        #    conf(*(base_args + ["-mpi", compiler]))
-        #    make("install")
+        if self.spec.satisfies("+mpi"):
+            conf(*(base_args + ["--mpi", "--compiler", compiler]))
+            # make("install")
 
         ## Openmp
-        #if self.spec.satisfies("+openmp"):
-        #    make("clean")
-        #    conf(*(base_args + ["-openmp", compiler]))
-        #    make("openmp")
+        if self.spec.satisfies("+openmp"):
+            # make("clean")
+            conf(*(base_args + ["--openmp", "--compiler", compiler]))
+            # make("openmp")
 
         ## CUDA + MPI
-        #if self.spec.satisfies("+cuda") and self.spec.satisfies("+mpi"):
-        #    make("clean")
-        #    conf(*(base_args + ["-cuda", "-mpi", compiler]))
-        #    make("install")
+        if self.spec.satisfies("+cuda") and self.spec.satisfies("+mpi"):
+            # make("clean")
+            conf(*(base_args + ["--cuda", "--mpi", "--compiler", compiler]))
+            # make("install")
 
+        make("install")
         ## just install everything that was built
         install_tree(".", prefix)
 
