@@ -161,6 +161,7 @@ class Amber(Package, CudaPackage):
     def setup_build_environment(self, env):
         amber_src = self.stage.source_path
         env.set("AMBERHOME", amber_src)
+        env.set("AMBER_PREFIX", self.prefix)
 
         # The bundled Boost does not detect the bzip2 package, but
         # will silently fall back to a system install (if available).
@@ -208,7 +209,9 @@ class Amber(Package, CudaPackage):
         conf = Executable("./configure_cmake.py")
         base_args = [
             # "--no-python",
+            "--prefix", prefix,
         ]
+
         if self.spec.satisfies("~x11"):
             base_args += ["--noX11"]
 
