@@ -56,6 +56,7 @@ class Amber(Package, CudaPackage):
         )
 
     patches = [
+        ("22", "1", "8e225e4d6bd0ab1479dcffa856a7acdaec7b46446b55f27a74d44577df2c9dbe"),
         ("20", "1", "10780cb91a022b49ffdd7b1e2bf4a572fa4edb7745f0fc4e5d93b158d6168e42"),
         ("20", "2", "9c973e3f8f33a271d60787e8862901e8f69e94e7d80cda1695f7fad7bc396093"),
         ("20", "3", "acb359dc9b1bcff7e0f1965baa9f3f3dc18eeae99c49f1103c1e2986c0bbeed8"),
@@ -204,57 +205,90 @@ class Amber(Package, CudaPackage):
             string=True,
         )
 
+        # Amber 22 introduced a new configure_cmake script
         # Base configuration
-        os.chdir('build')
-        conf = Executable("./configure_cmake.py")
-        base_args = [
-            # "--no-python",
-            "--prefix", prefix,
-        ]
+        if str(self.version) == "22":
+            os.chdir('build')
+            conf = Executable("./configure_cmake.py")
+            base_args = [
+                "--prefix", prefix,
+            ]
 
-        if self.spec.satisfies("~x11"):
-            base_args += ["--noX11"]
+            if self.spec.satisfies("~x11"):
+                base_args += ["--noX11"]
 
-        # Update the sources: Apply all upstream patches
-        # if self.spec.satisfies("+update"):
-        #    update = Executable("./update_amber")
-        #    update(*(["--update"]))
-        # else:
-        #    base_args += ["--no-check-updates --no-apply-updates"]
+            # Single core
+            # conf(*(base_args + [compiler]))
+            conf(*(base_args))
 
-        # Non-x86 architecture
-        # if self.spec.target.family != "x86_64":
-        #    base_args += ["-nosse"]
+            # CUDA
+            if self.spec.satisfies("+cuda"):
+                conf(*(base_args + ["--cuda", "--compiler", compiler]))
 
-        # Single core
-        # conf(*(base_args + [compiler]))
-        conf(*(base_args))
+            ## MPI
+            if self.spec.satisfies("+mpi"):
+                conf(*(base_args + ["--mpi", "--compiler", compiler]))
 
-        # CUDA
-        if self.spec.satisfies("+cuda"):
-            conf(*(base_args + ["--cuda", "--compiler", compiler]))
-            # make("install")
+            ## Openmp
+            if self.spec.satisfies("+openmp"):
+                conf(*(base_args + ["--openmp", "--compiler", compiler]))
 
-        ## MPI
-        if self.spec.satisfies("+mpi"):
-            conf(*(base_args + ["--mpi", "--compiler", compiler]))
-            # make("install")
+            ## CUDA + MPI
+            if self.spec.satisfies("+cuda") and self.spec.satisfies("+mpi"):
+                conf(*(base_args + ["--cuda", "--mpi", "--compiler", compiler]))
 
-        ## Openmp
-        if self.spec.satisfies("+openmp"):
-            # make("clean")
-            conf(*(base_args + ["--openmp", "--compiler", compiler]))
-            # make("openmp")
+            make("install")
+            ## just install everything that was built
+            install_tree(".", prefix)
+        else:
+            conf = Executable("./configure")
+            base_args = [
+                "--skip-python",
+                "--with-netcdf",
+                self.spec["netcdf-fortran"].prefix,
+            ]
+            if self.spec.satisfies("~x11"):
+                base_args += ["-noX11"]
 
-        ## CUDA + MPI
-        if self.spec.satisfies("+cuda") and self.spec.satisfies("+mpi"):
-            # make("clean")
-            conf(*(base_args + ["--cuda", "--mpi", "--compiler", compiler]))
-            # make("install")
+            # Update the sources: Apply all upstream patches
+            if self.spec.satisfies("+update"):
+                update = Executable("./update_amber")
+                update(*(["--update"]))
+            else:
+                base_args += ["--no-updates"]
 
-        make("install")
-        ## just install everything that was built
-        install_tree(".", prefix)
+            # Non-x86 architecture
+            if self.spec.target.family != "x86_64":
+                base_args += ["-nosse"]
+
+            # Single core
+            conf(*(base_args + [compiler]))
+            make("install")
+
+            # CUDA
+            if self.spec.satisfies("+cuda"):
+                conf(*(base_args + ["-cuda", compiler]))
+                make("install")
+
+            # MPI
+            if self.spec.satisfies("+mpi"):
+                conf(*(base_args + ["-mpi", compiler]))
+                make("install")
+
+            # Openmp
+            if self.spec.satisfies("+openmp"):
+                make("clean")
+                conf(*(base_args + ["-openmp", compiler]))
+                make("openmp")
+
+            # CUDA + MPI
+            if self.spec.satisfies("+cuda") and self.spec.satisfies("+mpi"):
+                make("clean")
+                conf(*(base_args + ["-cuda", "-mpi", compiler]))
+                make("install")
+
+            # just install everything that was built
+            install_tree(".", prefix)
 
     def setup_run_environment(self, env):
         env.set("AMBER_PREFIX", self.prefix)
@@ -262,3 +296,8 @@ class Amber(Package, CudaPackage):
         # CUDA
         if self.spec.satisfies("+cuda"):
             env.prepend_path("LD_LIBRARY_PATH", self.spec["cuda"].prefix.lib)
+
+        # does this exist in amber <22?
+        filename = os.path.join(self.prefix, "amber.sh")
+        if os.path.exists(filename):
+            env.extend(EnvironmentModifications.from_sourcing_file(filename))

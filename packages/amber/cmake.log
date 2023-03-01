@@ -1,6 +1,0 @@
-Starting configure_cmake.py on Mon Dec 12 18:36:40 2022
-
-Setting SOURCE path automatically to ... /apps/software-configs/moma-spack/packages
-Setting INSTALL path PREFIX automatically to ... /apps/software-configs/moma-spack/amber22
-Amber(Tools) source directory .......... /apps/software-configs/moma-spack/packages
-This directory is not a Amber source tree. CMakeLists.txt is missing...
