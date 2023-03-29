@@ -7,6 +7,7 @@ import os
 import shutil
 
 from spack.package import *
+from spack.util.environment import EnvironmentModifications
 
 
 class Amber(Package, CudaPackage):
